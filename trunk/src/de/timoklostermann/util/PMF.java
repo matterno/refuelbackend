@@ -5,7 +5,7 @@ import javax.jdo.PersistenceManagerFactory;
 
 
 
-public class PersistanceManager {
+public class PMF {
 	
 	/**
 	 * The {@link PersistanceManagerFactory} instance.
@@ -15,7 +15,7 @@ public class PersistanceManager {
 	/**
 	 * Private Constructor. No Instance should be created.
 	 */
-	private PersistanceManager() {}
+	private PMF() {}
 	
 	/**
 	 * Getting the {@link PersistenceManagerFactory} instance.
