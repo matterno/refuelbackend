@@ -2,7 +2,7 @@ package de.timoklostermann.datastore.interfaces;
 
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
-public interface JSONConverter {
+public interface JSONConvertible {
 
 	/**
 	 * Converting the entity to a {@link JSON} object.
