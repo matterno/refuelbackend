@@ -22,7 +22,7 @@ public abstract class AbstractDAO {
 	 * The persistance manager for queries.
 	 * Protected so that all DAOs can use this.
 	 */
-	protected PersistenceManager pm = PMF.getInstance().getPersistenceManager();
+	protected PersistenceManager pm = PMF.get().getPersistenceManager();
 	
 	/**
 	 * Logger.
@@ -61,7 +61,7 @@ public abstract class AbstractDAO {
 	 * @return
 	 */
 	public <T extends Entity> T persist(T entity) {
-		final PersistenceManager pManager = PMF.getInstance().getPersistenceManager();
+		final PersistenceManager pManager = PMF.get().getPersistenceManager();
 		T result = null;
 		try {
 			result = pManager.makePersistent(entity);
