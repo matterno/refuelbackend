@@ -21,7 +21,7 @@ public class PMF {
 	 * Getting the {@link PersistenceManagerFactory} instance.
 	 * @return {@link PersistenceManagerFactory}
 	 */
-	public static PersistenceManagerFactory getInstance() {
+	public static PersistenceManagerFactory get() {
 		return INSTANCE;
 	}
 }
