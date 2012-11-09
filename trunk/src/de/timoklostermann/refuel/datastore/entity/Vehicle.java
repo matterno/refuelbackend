@@ -1,4 +1,4 @@
-package de.timoklostermann.datastore.entity;
+package de.timoklostermann.refuel.datastore.entity;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -12,8 +12,8 @@ import javax.jdo.annotations.PrimaryKey;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
-import de.timoklostermann.datastore.interfaces.Entity;
-import de.timoklostermann.datastore.interfaces.JSONConvertible;
+import de.timoklostermann.refuel.datastore.interfaces.Entity;
+import de.timoklostermann.refuel.datastore.interfaces.JSONConvertible;
 
 @PersistenceCapable
 public class Vehicle implements Entity, JSONConvertible {

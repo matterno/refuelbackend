@@ -1,4 +1,4 @@
-package de.timoklostermann.datastore.enums;
+package de.timoklostermann.refuel.datastore.enums;
 
 public enum DistanceUnits {
 	KILOMETERS,

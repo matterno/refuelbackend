@@ -1,4 +1,4 @@
-package de.timoklostermann.datastore.interfaces;
+package de.timoklostermann.refuel.datastore.interfaces;
 
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 

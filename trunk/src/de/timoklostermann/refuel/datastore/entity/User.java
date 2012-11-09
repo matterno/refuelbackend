@@ -1,4 +1,4 @@
-package de.timoklostermann.datastore.entity;
+package de.timoklostermann.refuel.datastore.entity;
 
 import java.util.Date;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.NullValue;
+import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 import javax.jdo.annotations.Unique;
@@ -13,9 +14,10 @@ import javax.jdo.annotations.Unique;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
-import de.timoklostermann.datastore.interfaces.Entity;
-import de.timoklostermann.datastore.interfaces.JSONConvertible;
+import de.timoklostermann.refuel.datastore.interfaces.Entity;
+import de.timoklostermann.refuel.datastore.interfaces.JSONConvertible;
 
+@PersistenceCapable
 public class User implements Entity, JSONConvertible {
 
 	/**
@@ -33,7 +35,7 @@ public class User implements Entity, JSONConvertible {
 
 	@Unique
 	@Persistent(nullValue=NullValue.EXCEPTION)
-	private String nick;
+	private String name;
 	
 	@Persistent(nullValue=NullValue.EXCEPTION)
 	private String password;
@@ -70,6 +72,24 @@ public class User implements Entity, JSONConvertible {
 	private static final String U_VEHICLES = "U7";
 	
 	/* --------------------------------
+	 * Constructor
+	 * -------------------------------- */
+	
+	/**
+	 * The constructor with all needed information.
+	 * @param nick
+	 * @param password
+	 * @param email
+	 * @param createDate
+	 */
+	public User(String nick, String password, String email, Date createDate) {
+		this.name = nick;
+		this.password = password;
+		this.email = email;
+		this.createDate = createDate;
+	}
+	
+	/* --------------------------------
 	 * Getters and Setters
 	 * -------------------------------- */
 	
@@ -84,11 +104,11 @@ public class User implements Entity, JSONConvertible {
 	}
 	
 	public String getNick() {
-		return nick;
+		return name;
 	}
 
 	public void setNick(String nick) {
-		this.nick = nick;
+		this.name = nick;
 	}
 
 	public String getPassword() {
