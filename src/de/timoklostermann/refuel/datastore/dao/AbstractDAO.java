@@ -1,4 +1,4 @@
-package de.timoklostermann.datastore.dao;
+package de.timoklostermann.refuel.datastore.dao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,9 @@ import javax.jdo.Transaction;
 
 import com.google.appengine.api.datastore.Key;
 
-import de.timoklostermann.common.Constants;
-import de.timoklostermann.datastore.interfaces.Entity;
-import de.timoklostermann.util.PMF;
+import de.timoklostermann.refuel.common.Constants;
+import de.timoklostermann.refuel.datastore.interfaces.Entity;
+import de.timoklostermann.refuel.util.PMF;
 
 public abstract class AbstractDAO {
 	

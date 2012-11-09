@@ -1,13 +1,8 @@
-package de.timoklostermann.datastore.dao;
+package de.timoklostermann.refuel.datastore.dao;
 
-import java.util.List;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManager;
-
-import de.timoklostermann.datastore.entity.Filling;
-import de.timoklostermann.datastore.interfaces.Entity;
-import de.timoklostermann.util.PMF;
+import de.timoklostermann.refuel.datastore.interfaces.Entity;
 
 public class FillingDAO extends AbstractDAO {
 	/**

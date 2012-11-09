@@ -1,4 +1,4 @@
-package de.timoklostermann.util;
+package de.timoklostermann.refuel.util;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManagerFactory;

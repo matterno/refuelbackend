@@ -1,4 +1,4 @@
-package de.timoklostermann.datastore.entity;
+package de.timoklostermann.refuel.datastore.entity;
 
 import java.util.Date;
 import java.util.logging.Logger;
@@ -14,9 +14,9 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
-import de.timoklostermann.common.Constants;
-import de.timoklostermann.datastore.interfaces.Entity;
-import de.timoklostermann.datastore.interfaces.JSONConvertible;
+import de.timoklostermann.refuel.common.Constants;
+import de.timoklostermann.refuel.datastore.interfaces.Entity;
+import de.timoklostermann.refuel.datastore.interfaces.JSONConvertible;
 
 @PersistenceCapable
 public class Filling implements Entity, JSONConvertible {
