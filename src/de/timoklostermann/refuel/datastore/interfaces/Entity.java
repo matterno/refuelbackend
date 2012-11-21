@@ -13,11 +13,11 @@ public interface Entity {
 	 * Getting the primary key.
 	 * @return {@link Key}
 	 */
-	Key getPkId();
+	public Key getKey();
 	
 	/**
 	 * Setting the primary key.
-	 * @param pkId {@link Key}
+	 * @param key {@link Key}
 	 */
-	void setPkId(Key pkId);
+	public void setKey(Key key);
 }

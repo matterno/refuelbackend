@@ -37,8 +37,8 @@ public class RegisterServlet extends HttpServlet {
 		try {
 			// JDO for AppEngine doesnt support @unique annotations. Looking for
 			// entries with given name or email.
-			if (userDAO.findByName(registerName).isEmpty()
-					&& userDAO.findByEmail(registerEmail).isEmpty()) {
+			if (userDAO.findByName(registerName) == null
+					&& userDAO.findByEmail(registerEmail) == null) {
 				// no other entry found
 				
 				User user = new User(registerName, registerPw, registerEmail, new Date());
