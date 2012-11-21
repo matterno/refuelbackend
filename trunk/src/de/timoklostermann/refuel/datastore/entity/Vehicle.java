@@ -1,8 +1,8 @@
 package de.timoklostermann.refuel.datastore.entity;
 
-import java.util.List;
-import java.util.logging.Logger;
+import java.util.Set;
 
+import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.NullValue;
 import javax.jdo.annotations.PersistenceCapable;
@@ -10,35 +10,28 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 import de.timoklostermann.refuel.datastore.interfaces.Entity;
-import de.timoklostermann.refuel.datastore.interfaces.JSONConvertible;
 
 @PersistenceCapable
-public class Vehicle implements Entity, JSONConvertible {
-
-	/**
-	 * The logging instance.
-	 */
-	private static final Logger LOG = Logger.getLogger(Vehicle.class.getName());
+public class Vehicle implements Entity {
 	
 	/* --------------------------------
 	 * Attributes
 	 * -------------------------------- */
 	
 	@PrimaryKey
-	@Persistent(valueStrategy=IdGeneratorStrategy.IDENTITY)
-	private Key pkId;
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
 	
 	@Persistent(nullValue=NullValue.EXCEPTION)
 	private User user;
 	
 	@Persistent
-	private String marque;
+	private String make;
 	
 	@Persistent
-	private String type;
+	private String model;
 	
 	@Persistent(nullValue=NullValue.EXCEPTION)
 	private String name;
@@ -47,85 +40,82 @@ public class Vehicle implements Entity, JSONConvertible {
 	private int buildYear;
 	
 	@Persistent(nullValue=NullValue.EXCEPTION)
-	private int vehicleType;
+	private int vehicleTypeID;
 	
 	@Persistent(nullValue=NullValue.EXCEPTION)
-	private int distanceUnit;
+	private int distanceUnitID;
 	
 	@Persistent(nullValue=NullValue.EXCEPTION)
-	private int quantityUnit;
+	private int quantityUnitID;
 	
 	@Persistent(nullValue=NullValue.EXCEPTION)
-	private int consumptionUnit;
+	private int consumptionUnitID;
 	
 	@Persistent(nullValue=NullValue.EXCEPTION)
-	private int currency;
+	private String currency;
 	
-	@Persistent(mappedBy = "vehicle")
-	private List<Filling> fillings;
-	
-	@Persistent(mappedBy = "vehicle")
-	private List<Accessory> accessories;
+	@Persistent(mappedBy="vehicle")
+	@Element(dependent="true")
+	private Set<Filling> fillings; 
 	
 	/* --------------------------------
-	 * JSON-Keys
+	 * Constructor
 	 * -------------------------------- */
 	
-	private static final String V_ID = "V1";
-	
-	private static final String V_USER = "V2";
-	
-	private static final String V_MARQUE = "V3";
-	
-	private static final String V_TYPE = "V4";
-	
-	private static final String V_NAME = "V5";
-	
-	private static final String V_BUILDYEAR = "V6";
-	
-	private static final String V_VEHICLETYPE = "V7";
-	
-	private static final String V_DISTANCEUNIT = "V8";
-	
-	private static final String V_QUANTITYUNIT = "V9";
-	
-	private static final String V_CONSUMPTIONUNIT = "V10";
-	
-	private static final String V_CURRENCY = "V11";
-	
-	private static final String V_FILLINGS = "V12";
-	
-	private static final String V_ACCESSORIES = "V13";
+	/**
+	 * Constructor for all needed (not null) information.
+	 * @param user
+	 * @param name
+	 * @param vehicleTypeID
+	 * @param distanceUnitID
+	 * @param quantityUnitID
+	 * @param consumptionUnitID
+	 * @param currency
+	 */
+	public Vehicle(User user, String name, int vehicleTypeID, int distanceUnitID, int quantityUnitID, int consumptionUnitID, String currency) {
+		this.user = user;
+		this.name = name;
+		this.vehicleTypeID = vehicleTypeID;
+		this.distanceUnitID = distanceUnitID;
+		this.quantityUnitID = quantityUnitID;
+		this.consumptionUnitID = consumptionUnitID;
+		this.currency = currency;
+	}
 	
 	/* --------------------------------
 	 * Getters and Setters
 	 * -------------------------------- */
 	
-	@Override
-	public Key getPkId() {
-		return this.pkId;
+	public Key getKey() {
+		return this.key;
 	}
 
-	@Override
-	public void setPkId(Key pkId) {
-		this.pkId = pkId;
+	public void setKey(Key key) {
+		this.key = key;
 	}
 
-	
-	public String getMarque() {
-		return marque;
+	public User getUser() {
+		return user;
 	}
 
-	public void setMarque(String marque) {
-		this.marque = marque;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	public String getType() {
-		return type;
+	public String getMake() {
+		return make;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setMake(String make) {
+		this.make = make;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
 	}
 
 	public String getName() {
@@ -144,58 +134,51 @@ public class Vehicle implements Entity, JSONConvertible {
 		this.buildYear = buildYear;
 	}
 
-	public int getVehicleType() {
-		return vehicleType;
+	public int getVehicleTypeID() {
+		return vehicleTypeID;
 	}
 
-	public void setVehicleType(int vehicleType) {
-		this.vehicleType = vehicleType;
+	public void setVehicleTypeID(int vehicleTypeID) {
+		this.vehicleTypeID = vehicleTypeID;
 	}
 
-	public int getDistanceUnit() {
-		return distanceUnit;
+	public int getDistanceUnitID() {
+		return distanceUnitID;
 	}
 
-	public void setDistanceUnit(int distanceUnit) {
-		this.distanceUnit = distanceUnit;
+	public void setDistanceUnitID(int distanceUnitID) {
+		this.distanceUnitID = distanceUnitID;
 	}
 
-	public int getQuantityUnit() {
-		return quantityUnit;
+	public int getQuantityUnitID() {
+		return quantityUnitID;
 	}
 
-	public void setQuantityUnit(int quantityUnit) {
-		this.quantityUnit = quantityUnit;
+	public void setQuantityUnitID(int quantityUnitID) {
+		this.quantityUnitID = quantityUnitID;
 	}
 
-	public int getConsumptionUnit() {
-		return consumptionUnit;
+	public int getConsumptionUnitID() {
+		return consumptionUnitID;
 	}
 
-	public void setConsumptionUnit(int consumptionUnit) {
-		this.consumptionUnit = consumptionUnit;
+	public void setConsumptionUnitID(int consumptionUnitID) {
+		this.consumptionUnitID = consumptionUnitID;
 	}
 
-	public int getCurrency() {
+	public String getCurrency() {
 		return currency;
 	}
 
-	public void setCurrency(int currency) {
+	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
 
-	public List<Filling> getFillings() {
+	public Set<Filling> getFillings() {
 		return fillings;
 	}
 
-	public void setFillings(List<Filling> fillings) {
+	public void setFillings(Set<Filling> fillings) {
 		this.fillings = fillings;
-	}
-
-	//TODO implementieren
-	@Override
-	public JSONObject toJSON() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

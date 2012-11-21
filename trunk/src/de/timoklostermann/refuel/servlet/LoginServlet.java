@@ -34,15 +34,15 @@ public class LoginServlet extends HttpServlet {
 		try {
 			// JDO for AppEngine doesnt support @unique annotations. Looking for
 			// entries with given name or email.
-			if (userDAO.findByName(loginName).isEmpty()) {
+			if (userDAO.findByName(loginName) == null) {
 				// User not found
 				log.info("User " + loginName + " not found");
 				json.put(Constants.JSON_SUCCESS, false);
 				json.put(Constants.JSON_ERROR, Constants.ERROR_USER_EXISTS_NOT);
-			} else if(userDAO.findByName(loginName).get(0).getPassword().equals(loginPw)) {
+			} else if(userDAO.findByName(loginName).getPassword().equals(loginPw)) {
 				// PW is the same
 				log.info("User " + loginName + " logged in");
-				userDAO.findByName(loginName).get(0).setLastLoginDate(new Date());
+				userDAO.findByName(loginName).setLastLoginDate(new Date());
 				json.put(Constants.JSON_SUCCESS, true);
 			} else {
 				// PW Wrong

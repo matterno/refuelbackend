@@ -1,46 +1,36 @@
 package de.timoklostermann.refuel.datastore.entity;
 
 import java.util.Date;
-import java.util.List;
-import java.util.logging.Logger;
+import java.util.Set;
 
+import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.NullValue;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
-import javax.jdo.annotations.Unique;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 import de.timoklostermann.refuel.datastore.interfaces.Entity;
-import de.timoklostermann.refuel.datastore.interfaces.JSONConvertible;
 
 @PersistenceCapable
-public class User implements Entity, JSONConvertible {
-
-	/**
-	 * The logging instance.
-	 */
-	private static final Logger LOG = Logger.getLogger(User.class.getName());
+public class User implements Entity {
 	
 	/* --------------------------------
 	 * Attributes
 	 * -------------------------------- */
 	
 	@PrimaryKey
-	@Persistent(valueStrategy=IdGeneratorStrategy.IDENTITY)
-	private Key pkId;
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
 
-	@Unique
 	@Persistent(nullValue=NullValue.EXCEPTION)
 	private String name;
 	
 	@Persistent(nullValue=NullValue.EXCEPTION)
 	private String password;
 	
-	@Unique
 	@Persistent(nullValue=NullValue.EXCEPTION)
 	private String email;
 	
@@ -50,26 +40,13 @@ public class User implements Entity, JSONConvertible {
 	@Persistent(nullValue=NullValue.EXCEPTION)
 	private Date createDate;
 	
+	@Persistent
+	@Element(dependent="true")
+	private Vehicle defaultVehicle;
+	
 	@Persistent(mappedBy="user")
-	private List<Vehicle> vehicles;
-	
-	/* --------------------------------
-	 * JSON-Keys
-	 * -------------------------------- */
-	
-	private static final String U_ID = "U1";
-	
-	private static final String U_NICK = "U2";
-	
-	private static final String U_PW = "U3";
-	
-	private static final String U_EMAIL = "U4";
-	
-	private static final String U_LASTLOGIN = "U5";
-	
-	private static final String U_CREATEDATE = "U6";
-	
-	private static final String U_VEHICLES = "U7";
+	@Element(dependent="true")
+	private Set<Vehicle> vehicles;
 	
 	/* --------------------------------
 	 * Constructor
@@ -93,22 +70,20 @@ public class User implements Entity, JSONConvertible {
 	 * Getters and Setters
 	 * -------------------------------- */
 	
-	@Override
-	public Key getPkId() {
-		return this.pkId;
+	public Key getKey() {
+		return this.key;
 	}
 	
-	@Override
-	public void setPkId(Key pkId) {
-		this.pkId = pkId;
+	public void setKey(Key key) {
+		this.key = key;
 	}
-	
-	public String getNick() {
+
+	public String getName() {
 		return name;
 	}
 
-	public void setNick(String nick) {
-		this.name = nick;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getPassword() {
@@ -143,20 +118,19 @@ public class User implements Entity, JSONConvertible {
 		this.createDate = createDate;
 	}
 
-	public List<Vehicle> getVehicles() {
+	public Vehicle getDefaultVehicle() {
+		return defaultVehicle;
+	}
+
+	public void setDefaultVehicle(Vehicle defaultVehicle) {
+		this.defaultVehicle = defaultVehicle;
+	}
+
+	public Set<Vehicle> getVehicles() {
 		return vehicles;
 	}
 
-	public void setVehicles(List<Vehicle> vehicles) {
+	public void setVehicles(Set<Vehicle> vehicles) {
 		this.vehicles = vehicles;
 	}
-
-	@Override
-	public JSONObject toJSON() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
 }

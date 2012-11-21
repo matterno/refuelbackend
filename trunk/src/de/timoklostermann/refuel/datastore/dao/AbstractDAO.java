@@ -47,7 +47,7 @@ public abstract class AbstractDAO {
 		if (state.equals(ObjectState.TRANSIENT)
 				|| state.equals(ObjectState.HOLLOW_PERSISTENT_NONTRANSACTIONAL)) {
 			this.pm.deletePersistent(this.pm.getObjectById(
-					entity.getClass(), entity.getPkId()));
+					entity.getClass(), entity.getKey()));
 		} else {
 			this.pm.deletePersistent(entity);
 		}
