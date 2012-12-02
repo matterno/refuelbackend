@@ -61,13 +61,21 @@ public abstract class AbstractDAO {
 	 * @return
 	 */
 	public <T extends Entity> T persist(T entity) {
-		final PersistenceManager pManager = PMF.get().getPersistenceManager();
+//		final PersistenceManager pManager = PMF.get().getPersistenceManager();
+//		T result = null;
+//		try {
+//			result = pManager.makePersistent(entity);
+//			pManager.flush();
+//		} finally {
+//			pManager.close();
+//		}
+//		return result;
 		T result = null;
 		try {
-			result = pManager.makePersistent(entity);
-			pManager.flush();
+			result = pm.makePersistent(entity);
+			pm.flush();
 		} finally {
-			pManager.close();
+			pm.close();
 		}
 		return result;
 	}
