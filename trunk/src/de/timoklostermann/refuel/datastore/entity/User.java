@@ -3,7 +3,6 @@ package de.timoklostermann.refuel.datastore.entity;
 import java.util.Date;
 import java.util.Set;
 
-import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.NullValue;
 import javax.jdo.annotations.PersistenceCapable;
@@ -41,11 +40,6 @@ public class User implements Entity {
 	private Date createDate;
 	
 	@Persistent
-	@Element(dependent="true")
-	private Vehicle defaultVehicle;
-	
-	@Persistent(mappedBy="user")
-	@Element(dependent="true")
 	private Set<Vehicle> vehicles;
 	
 	/* --------------------------------
@@ -116,14 +110,6 @@ public class User implements Entity {
 
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
-	}
-
-	public Vehicle getDefaultVehicle() {
-		return defaultVehicle;
-	}
-
-	public void setDefaultVehicle(Vehicle defaultVehicle) {
-		this.defaultVehicle = defaultVehicle;
 	}
 
 	public Set<Vehicle> getVehicles() {

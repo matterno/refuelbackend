@@ -24,9 +24,6 @@ public class Filling implements Entity {
 	private Key key;
 	
 	@Persistent(nullValue=NullValue.EXCEPTION)
-	private Vehicle vehicle;
-	
-	@Persistent(nullValue=NullValue.EXCEPTION)
 	private double price;
 
 	@Persistent(nullValue=NullValue.EXCEPTION)
@@ -57,14 +54,6 @@ public class Filling implements Entity {
 
 	public void setKey(Key key) {
 		this.key = key;
-	}
-
-	public Vehicle getVehicle() {
-		return vehicle;
-	}
-
-	public void setVehicle(Vehicle vehicle) {
-		this.vehicle = vehicle;
 	}
 
 	public double getPrice() {

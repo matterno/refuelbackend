@@ -2,7 +2,6 @@ package de.timoklostermann.refuel.datastore.entity;
 
 import java.util.Set;
 
-import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.NullValue;
 import javax.jdo.annotations.PersistenceCapable;
@@ -23,9 +22,6 @@ public class Vehicle implements Entity {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
-	
-	@Persistent(nullValue=NullValue.EXCEPTION)
-	private User user;
 	
 	@Persistent
 	private String make;
@@ -54,8 +50,7 @@ public class Vehicle implements Entity {
 	@Persistent(nullValue=NullValue.EXCEPTION)
 	private String currency;
 	
-	@Persistent(mappedBy="vehicle")
-	@Element(dependent="true")
+	@Persistent
 	private Set<Filling> fillings; 
 	
 	/* --------------------------------
@@ -72,8 +67,7 @@ public class Vehicle implements Entity {
 	 * @param consumptionUnitID
 	 * @param currency
 	 */
-	public Vehicle(User user, String name, int vehicleTypeID, int distanceUnitID, int quantityUnitID, int consumptionUnitID, String currency) {
-		this.user = user;
+	public Vehicle(String name, int vehicleTypeID, int distanceUnitID, int quantityUnitID, int consumptionUnitID, String currency) {
 		this.name = name;
 		this.vehicleTypeID = vehicleTypeID;
 		this.distanceUnitID = distanceUnitID;
@@ -92,14 +86,6 @@ public class Vehicle implements Entity {
 
 	public void setKey(Key key) {
 		this.key = key;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public String getMake() {

@@ -1,7 +1,8 @@
 package de.timoklostermann.refuel.servlet;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -14,7 +15,6 @@ import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 import de.timoklostermann.refuel.datastore.dao.UserDAO;
-import de.timoklostermann.refuel.datastore.dao.VehicleDAO;
 import de.timoklostermann.refuel.datastore.entity.User;
 import de.timoklostermann.refuel.datastore.entity.Vehicle;
 import de.timoklostermann.refuel.util.Constants;
@@ -30,10 +30,8 @@ public class VehicleServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		int requestType = Integer.parseInt(req.getParameter(Constants.REQUEST_TYPE));
-
-		//TODO Instanzierung in switch-case verlagern
 		
-		String vehicleUser = req.getParameter(Constants.VEHICLE_USER);
+		String userName = req.getParameter(Constants.USER_NAME);
 		String vehicleMake = req.getParameter(Constants.VEHICLE_MAKE);
 		String vehicleModel = req.getParameter(Constants.VEHICLE_MODEL);
 		String vehicleName = req.getParameter(Constants.VEHICLE_NAME);
@@ -43,69 +41,86 @@ public class VehicleServlet extends HttpServlet {
 		int vehicleQuantityUnit = (req.getParameter(Constants.VEHICLE_QUANTITY_UNIT) != null ? Integer.parseInt(req.getParameter(Constants.VEHICLE_QUANTITY_UNIT)) : 0);
 		int vehicleConsumptionUnit = (req.getParameter(Constants.VEHICLE_CONSUMPTION_UNIT) != null ? Integer.parseInt(req.getParameter(Constants.VEHICLE_CONSUMPTION_UNIT)) : 0);
 		String vehicleCurrency = req.getParameter(Constants.VEHICLE_CURRENCY);
-
+		long vehicleID = (req.getParameter(Constants.VEHICLE_KEY) != null ? Long.parseLong(req.getParameter(Constants.VEHICLE_KEY)) : 0);
+		
+		log.info("RequestType: " + requestType);
+		log.info("VehicleName: " + vehicleName);
+		log.info("UserName: " + userName);
+		
 		JSONObject json = new JSONObject();
 
 		try {
 			switch (requestType) {
-			case Constants.REQUEST_TYPE_VEHICLE_SAVE_DEFAULT:
-				this.saveDefaultVehicle(json, vehicleUser, vehicleName,
+			case Constants.REQUEST_TYPE_VEHICLE_SAVE:
+				this.saveVehicle(json, userName, vehicleName,
 						vehicleType, vehicleDistanceUnit, vehicleQuantityUnit,
 						vehicleConsumptionUnit, vehicleCurrency, vehicleMake,
 						vehicleModel, vehicleYear);
 
 				break;
-			case Constants.REQUEST_TYPE_VEHICLE_GET_DEFAULT:
-				this.getDefaultVehicle(json, vehicleUser);
+			case Constants.REQUEST_TYPE_VEHICLE_GET:
+				this.getVehicle(json, userName, vehicleName);
+				break;
 			case Constants.REQUEST_TYPE_VEHICLE_GET_ALL_LIST:
-				this.getAllVehicle(json, vehicleUser);
+				this.getAllVehicle(json, userName);
+				break;
+			case Constants.REQUEST_TYPE_VEHICLE_UPDATE:
+				this.updateVehicle(json, vehicleID, userName, vehicleName, vehicleType, vehicleDistanceUnit, vehicleQuantityUnit, vehicleConsumptionUnit, vehicleCurrency, vehicleMake, vehicleModel, vehicleYear);
+				break;
 			}
+			json.put(Constants.REQUEST_TYPE, requestType);
 		} catch (JSONException e) {
 			log.severe("JSON error!");
 		}
-		
+
 		resp.setContentType("application/json");
 		resp.getWriter().print(json);
 	}
 
-	private void saveDefaultVehicle(JSONObject json, String vehicleUser,
+	private void saveVehicle(JSONObject json, String userName,
 			String vehicleName, int vehicleType, int vehicleDistanceUnit,
 			int vehicleQuantityUnit, int vehicleConsumptionUnit,
 			String vehicleCurrency, String vehicleMake, String vehicleModel,
-			int vehicleYear) throws JSONException {
+			int vehicleYear) throws JSONException {		
 		// Find user in DB
 		UserDAO userDAO = new UserDAO();
-		User user = userDAO.findByName(vehicleUser);
-		userDAO.close();
-
+		User user = userDAO.findByName(userName);
+		
 		// Create new entity
-		VehicleDAO vehicleDAO = new VehicleDAO();
-		Vehicle vehicle = new Vehicle(user, vehicleName, vehicleType,
+		Vehicle vehicle = new Vehicle(vehicleName, vehicleType,
 				vehicleDistanceUnit, vehicleQuantityUnit,
 				vehicleConsumptionUnit, vehicleCurrency);
 		vehicle.setMake(vehicleMake);
 		vehicle.setModel(vehicleModel);
 		vehicle.setBuildYear(vehicleYear);
-
-		vehicle = vehicleDAO.saveOrUpdate(vehicle);
-		vehicleDAO.close();
-
-		// set default vehicle for user
-		user.setDefaultVehicle(vehicle);
-		userDAO.persist(user);
-
-		json.put(Constants.JSON_SUCCESS, true);
-
-	}
-
-	private void getDefaultVehicle(JSONObject json, String vehicleUser)
-			throws JSONException {
-		// Find user in DB
-		UserDAO userDAO = new UserDAO();
-		User user = userDAO.findByName(vehicleUser);
-
-		Vehicle vehicle = user.getDefaultVehicle();
+		
+		Set<Vehicle> vehicles = user.getVehicles();
+		if(vehicles == null) {
+			vehicles = new HashSet<Vehicle>();
+		}
+		vehicles.add(vehicle);
+		
+		user.setVehicles(vehicles);
 		userDAO.close();
+				
+		json.put(Constants.JSON_SUCCESS, true);
+	}
+	
+	private void getVehicle(JSONObject json, String userName, String vehicleName)
+			throws JSONException {		
+		UserDAO userDAO = new UserDAO();
+		User user = userDAO.findByName(userName);
+		
+		Set<Vehicle> vehicles = user.getVehicles();
+		userDAO.close();
+		
+		Vehicle vehicle = null;
+		for(Vehicle v : vehicles) {
+			if(v.getName().equals(vehicleName)) {
+				vehicle = v;
+				break;
+			}		
+		}
 
 		if (vehicle == null) {
 			json.put(Constants.JSON_SUCCESS, false);
@@ -121,17 +136,18 @@ public class VehicleServlet extends HttpServlet {
 			json.put(Constants.VEHICLE_QUANTITY_UNIT, vehicle.getQuantityUnitID());
 			json.put(Constants.VEHICLE_CONSUMPTION_UNIT, vehicle.getConsumptionUnitID());
 			json.put(Constants.VEHICLE_CURRENCY, vehicle.getCurrency());
+			json.put(Constants.VEHICLE_KEY, vehicle.getKey().getId());
 		}
+		
 	}
 
-	private void getAllVehicle(JSONObject json, String vehicleUser) throws JSONException {
+	private void getAllVehicle(JSONObject json, String userName) throws JSONException {
 		// Find user in DB
 		UserDAO userDAO = new UserDAO();
-		User user = userDAO.findByName(vehicleUser);
-		userDAO.close();
+		User user = userDAO.findByName(userName);
 		
-		VehicleDAO vehicleDAO = new VehicleDAO();
-		List<Vehicle> vehicles = vehicleDAO.findByUser(user);
+		Set<Vehicle> vehicles = user.getVehicles();
+		userDAO.close();
 		
 		if(vehicles == null || vehicles.isEmpty()) {
 			json.put(Constants.JSON_SUCCESS, false);
@@ -139,13 +155,58 @@ public class VehicleServlet extends HttpServlet {
 		} else {
 			json.put(Constants.JSON_SUCCESS, true);
 			
-			JSONArray jsonArray = new JSONArray();
+			JSONArray vehicleNames = new JSONArray();
 			for(Vehicle v : vehicles) {
-				jsonArray.put(v.getName());
+				vehicleNames.put(v.getName());
 			}
 			
-			json.put(Constants.VEHICLE_NAMES, jsonArray);
+			json.put(Constants.VEHICLE_NAMES, vehicleNames);
 		}
-		vehicleDAO.close();
+	}
+	
+	private void updateVehicle(JSONObject json, long vehicleId, String userName,
+			String vehicleName, int vehicleType, int vehicleDistanceUnit,
+			int vehicleQuantityUnit, int vehicleConsumptionUnit,
+			String vehicleCurrency, String vehicleMake, String vehicleModel,
+			int vehicleYear) throws JSONException {		
+		// Find user in DB
+		UserDAO userDAO = new UserDAO();
+		User user = userDAO.findByName(userName);
+		
+		Set<Vehicle> vehicles = user.getVehicles();
+		if(vehicles == null) {
+			userDAO.close();
+			json.put(Constants.JSON_SUCCESS, false);
+			json.put(Constants.JSON_ERROR, Constants.ERROR_VEHICLE_EXISTS_NOT);
+			return;
+		}
+		
+		Vehicle vehicle = null;
+		for(Vehicle v : vehicles) {
+			if(v.getKey().getId() == (vehicleId)) {
+				vehicle = v;
+				break;
+			}		
+		}
+		if(vehicle == null) {
+			userDAO.close();
+			json.put(Constants.JSON_SUCCESS, false);
+			json.put(Constants.JSON_ERROR, Constants.ERROR_VEHICLE_EXISTS_NOT);
+			return;
+		}
+		
+		vehicle.setName(vehicleName);
+		vehicle.setVehicleTypeID(vehicleType);
+		vehicle.setDistanceUnitID(vehicleDistanceUnit);
+		vehicle.setQuantityUnitID(vehicleQuantityUnit);
+		vehicle.setConsumptionUnitID(vehicleConsumptionUnit);
+		vehicle.setCurrency(vehicleCurrency);
+		vehicle.setMake(vehicleMake);
+		vehicle.setModel(vehicleModel);
+		vehicle.setBuildYear(vehicleYear);
+
+		userDAO.close();
+				
+		json.put(Constants.JSON_SUCCESS, true);
 	}
 }

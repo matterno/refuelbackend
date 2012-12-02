@@ -2,7 +2,7 @@
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
-	
+
 	<servlet>
 		<servlet-name>SystemServiceServlet</servlet-name>
 		<servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
@@ -15,7 +15,7 @@
 		<servlet-name>SystemServiceServlet</servlet-name>
 		<url-pattern>/_ah/spi/*</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>Login</servlet-name>
 		<servlet-class>de.timoklostermann.refuel.servlet.LoginServlet</servlet-class>
@@ -24,7 +24,7 @@
 		<servlet-name>Login</servlet-name>
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>Register</servlet-name>
 		<servlet-class>de.timoklostermann.refuel.servlet.RegisterServlet</servlet-class>
@@ -33,7 +33,7 @@
 		<servlet-name>Register</servlet-name>
 		<url-pattern>/register</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>Vehicle</servlet-name>
 		<servlet-class>de.timoklostermann.refuel.servlet.VehicleServlet</servlet-class>
@@ -42,4 +42,5 @@
 		<servlet-name>Vehicle</servlet-name>
 		<url-pattern>/vehicle</url-pattern>
 	</servlet-mapping>
+
 </web-app>
