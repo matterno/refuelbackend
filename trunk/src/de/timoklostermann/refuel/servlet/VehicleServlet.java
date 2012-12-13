@@ -146,6 +146,12 @@ public class VehicleServlet extends HttpServlet {
 		UserDAO userDAO = new UserDAO();
 		User user = userDAO.findByName(userName);
 		
+		if(user == null) {
+			json.put(Constants.JSON_SUCCESS, false);
+			json.put(Constants.JSON_ERROR, Constants.ERROR_USER_EXISTS_NOT);
+			return;
+		}
+		
 		Set<Vehicle> vehicles = user.getVehicles();
 		userDAO.close();
 		
