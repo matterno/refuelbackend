@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.jdo.Query;
 
+import de.timoklostermann.refuel.datastore.entity.Entity;
 import de.timoklostermann.refuel.datastore.entity.User;
-import de.timoklostermann.refuel.datastore.interfaces.Entity;
 
 public class UserDAO extends AbstractDAO {
 	

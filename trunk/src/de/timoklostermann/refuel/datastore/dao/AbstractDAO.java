@@ -12,8 +12,8 @@ import javax.jdo.Transaction;
 
 import com.google.appengine.api.datastore.Key;
 
-import de.timoklostermann.refuel.common.Constants;
-import de.timoklostermann.refuel.datastore.interfaces.Entity;
+import de.timoklostermann.refuel.datastore.entity.Entity;
+import de.timoklostermann.refuel.util.Constants;
 import de.timoklostermann.refuel.util.PMF;
 
 public abstract class AbstractDAO {
@@ -61,15 +61,6 @@ public abstract class AbstractDAO {
 	 * @return
 	 */
 	public <T extends Entity> T persist(T entity) {
-//		final PersistenceManager pManager = PMF.get().getPersistenceManager();
-//		T result = null;
-//		try {
-//			result = pManager.makePersistent(entity);
-//			pManager.flush();
-//		} finally {
-//			pManager.close();
-//		}
-//		return result;
 		T result = null;
 		try {
 			result = pm.makePersistent(entity);
