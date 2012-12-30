@@ -1,4 +1,4 @@
-package de.timoklostermann.refuel.datastore.interfaces;
+package de.timoklostermann.refuel.datastore.entity;
 
 import com.google.appengine.api.datastore.Key;
 

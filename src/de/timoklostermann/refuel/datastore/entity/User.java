@@ -11,7 +11,6 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 
-import de.timoklostermann.refuel.datastore.interfaces.Entity;
 
 @PersistenceCapable
 public class User implements Entity {
