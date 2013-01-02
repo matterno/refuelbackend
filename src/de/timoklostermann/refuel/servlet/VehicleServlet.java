@@ -1,8 +1,9 @@
 package de.timoklostermann.refuel.servlet;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -58,6 +59,7 @@ public class VehicleServlet extends HttpServlet {
 
 		log.info("RequestType: " + requestType);
 		log.info("VehicleName: " + vehicleName);
+		log.info("VehicleId: " + vehicleID);
 		log.info("UserName: " + userName);
 
 		JSONObject json = new JSONObject();
@@ -83,6 +85,9 @@ public class VehicleServlet extends HttpServlet {
 						vehicleConsumptionUnit, vehicleCurrency, vehicleMake,
 						vehicleModel, vehicleYear);
 				break;
+			case Constants.REQUEST_TYPE_VEHICLE_DELETE:
+				this.deleteVehicle(json, userName, vehicleID);
+				break;
 			}
 			json.put(Constants.REQUEST_TYPE, requestType);
 		} catch (JSONException e) {
@@ -102,6 +107,13 @@ public class VehicleServlet extends HttpServlet {
 		UserDAO userDAO = new UserDAO();
 		User user = userDAO.findByName(userName);
 
+		if (user == null) {
+			userDAO.close();
+			json.put(Constants.JSON_SUCCESS, false);
+			json.put(Constants.JSON_ERROR, Constants.ERROR_USER_EXISTS_NOT);
+			return;
+		}
+
 		// Create new entity
 		Vehicle vehicle = new Vehicle(vehicleName, vehicleType,
 				vehicleDistanceUnit, vehicleQuantityUnit,
@@ -111,9 +123,9 @@ public class VehicleServlet extends HttpServlet {
 		vehicle.setBuildYear(vehicleYear);
 
 		// Get all vehicles
-		Set<Vehicle> vehicles = user.getVehicles();
+		List<Vehicle> vehicles = user.getVehicles();
 		if (vehicles == null) {
-			vehicles = new HashSet<Vehicle>();
+			vehicles = new ArrayList<Vehicle>();
 		}
 
 		// Checking if vehicle with same name exists
@@ -142,9 +154,18 @@ public class VehicleServlet extends HttpServlet {
 		UserDAO userDAO = new UserDAO();
 		User user = userDAO.findByName(userName);
 
-		Set<Vehicle> vehicles = user.getVehicles();
+		if (user == null) {
+			userDAO.close();
+			json.put(Constants.JSON_SUCCESS, false);
+			json.put(Constants.JSON_ERROR, Constants.ERROR_USER_EXISTS_NOT);
+			return;
+		}
+
+		// Get all vehicles from user
+		List<Vehicle> vehicles = user.getVehicles();
 		userDAO.close();
 
+		// Get the vehicle
 		Vehicle vehicle = null;
 		for (Vehicle v : vehicles) {
 			if (v.getName().equals(vehicleName)) {
@@ -181,26 +202,33 @@ public class VehicleServlet extends HttpServlet {
 		UserDAO userDAO = new UserDAO();
 		User user = userDAO.findByName(userName);
 
+		// Error if user doesnt exist
 		if (user == null) {
+			userDAO.close();
 			json.put(Constants.JSON_SUCCESS, false);
 			json.put(Constants.JSON_ERROR, Constants.ERROR_USER_EXISTS_NOT);
 			return;
 		}
 
-		Set<Vehicle> vehicles = user.getVehicles();
+		// Get all vehicles from user
+		List<Vehicle> vehicles = user.getVehicles();
 		userDAO.close();
 
+		// If user has no vehicles, create new list
 		if (vehicles == null) {
-			vehicles = new HashSet<Vehicle>();
+			vehicles = new ArrayList<Vehicle>();
 		}
 
-		json.put(Constants.JSON_SUCCESS, true);
+		// Sort vehicle names
+		Collections.sort(vehicles);
 
+		// Put vehicle names into JSON-Array
 		JSONArray vehicleNames = new JSONArray();
 		for (Vehicle v : vehicles) {
 			vehicleNames.put(v.getName());
 		}
 
+		json.put(Constants.JSON_SUCCESS, true);
 		json.put(Constants.VEHICLE_NAMES, vehicleNames);
 
 	}
@@ -215,7 +243,16 @@ public class VehicleServlet extends HttpServlet {
 		UserDAO userDAO = new UserDAO();
 		User user = userDAO.findByName(userName);
 
-		Set<Vehicle> vehicles = user.getVehicles();
+		// Error if user doesnt exist
+		if (user == null) {
+			userDAO.close();
+			json.put(Constants.JSON_SUCCESS, false);
+			json.put(Constants.JSON_ERROR, Constants.ERROR_USER_EXISTS_NOT);
+			return;
+		}
+
+		// Get vehicles for user
+		List<Vehicle> vehicles = user.getVehicles();
 		if (vehicles == null) {
 			userDAO.close();
 			json.put(Constants.JSON_SUCCESS, false);
@@ -223,6 +260,17 @@ public class VehicleServlet extends HttpServlet {
 			return;
 		}
 
+		// Checking if vehicle with same name exists
+		for (Vehicle v : vehicles) {
+			if (vehicleName.equals(v.getName())) {
+				json.put(Constants.JSON_SUCCESS, false);
+				json.put(Constants.JSON_ERROR, Constants.ERROR_VEHICLE_EXISTS);
+				userDAO.close();
+				return;
+			}
+		}
+
+		// Get vehicle with the given id.
 		Vehicle vehicle = null;
 		for (Vehicle v : vehicles) {
 			if (v.getKey().getId() == (vehicleId)) {
@@ -230,6 +278,7 @@ public class VehicleServlet extends HttpServlet {
 				break;
 			}
 		}
+		// Check if vehicle is null
 		if (vehicle == null) {
 			userDAO.close();
 			json.put(Constants.JSON_SUCCESS, false);
@@ -237,6 +286,7 @@ public class VehicleServlet extends HttpServlet {
 			return;
 		}
 
+		// Update vehicle
 		vehicle.setName(vehicleName);
 		vehicle.setVehicleTypeID(vehicleType);
 		vehicle.setDistanceUnitID(vehicleDistanceUnit);
@@ -246,6 +296,34 @@ public class VehicleServlet extends HttpServlet {
 		vehicle.setMake(vehicleMake);
 		vehicle.setModel(vehicleModel);
 		vehicle.setBuildYear(vehicleYear);
+
+		userDAO.close();
+
+		json.put(Constants.JSON_SUCCESS, true);
+	}
+
+	private void deleteVehicle(JSONObject json, String userName, long vehicleId)
+			throws JSONException {
+		// Find user in DB
+		UserDAO userDAO = new UserDAO();
+		User user = userDAO.findByName(userName);
+
+		if (user == null) {
+			userDAO.close();
+			json.put(Constants.JSON_SUCCESS, false);
+			json.put(Constants.JSON_ERROR, Constants.ERROR_USER_EXISTS_NOT);
+			return;
+		}
+
+		List<Vehicle> vehicles = user.getVehicles();
+		if (vehicles == null) {
+			userDAO.close();
+			json.put(Constants.JSON_SUCCESS, false);
+			json.put(Constants.JSON_ERROR, Constants.ERROR_VEHICLE_EXISTS_NOT);
+			return;
+		}
+
+		// TODO DELETE VEHICLE
 
 		userDAO.close();
 

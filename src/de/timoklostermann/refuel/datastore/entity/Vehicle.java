@@ -12,7 +12,7 @@ import com.google.appengine.api.datastore.Key;
 
 
 @PersistenceCapable
-public class Vehicle implements Entity {
+public class Vehicle implements Entity, Comparable<Vehicle> {
 	
 	/* --------------------------------
 	 * Attributes
@@ -165,5 +165,14 @@ public class Vehicle implements Entity {
 
 	public void setFillings(Set<Filling> fillings) {
 		this.fillings = fillings;
+	}
+
+	@Override
+	public int compareTo(Vehicle o) {
+		if(key.getId() < o.getKey().getId()) {
+			return -1;
+		} else {
+			return 1;
+		}
 	}
 }

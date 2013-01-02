@@ -23,11 +23,9 @@ public class RegisterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		String registerName = req.getParameter("registerName");
-		String registerEmail = req.getParameter("registerEmail");
-		String registerPw = req.getParameter("registerPw");
-
-		// TODO check if not empty etc.
+		String registerName = req.getParameter(Constants.REGISTER_NAME);
+		String registerEmail = req.getParameter(Constants.REGISTER_EMAIL);
+		String registerPw = req.getParameter(Constants.REGISTER_PW);
 
 		JSONObject json = new JSONObject();
 		resp.setContentType("application/json");
