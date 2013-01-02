@@ -1,7 +1,7 @@
 package de.timoklostermann.refuel.datastore.entity;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.NullValue;
@@ -39,7 +39,7 @@ public class User implements Entity {
 	private Date createDate;
 	
 	@Persistent
-	private Set<Vehicle> vehicles;
+	private List<Vehicle> vehicles;
 	
 	/* --------------------------------
 	 * Constructor
@@ -111,11 +111,11 @@ public class User implements Entity {
 		this.createDate = createDate;
 	}
 
-	public Set<Vehicle> getVehicles() {
+	public List<Vehicle> getVehicles() {
 		return vehicles;
 	}
 
-	public void setVehicles(Set<Vehicle> vehicles) {
+	public void setVehicles(List<Vehicle> vehicles) {
 		this.vehicles = vehicles;
 	}
 }
