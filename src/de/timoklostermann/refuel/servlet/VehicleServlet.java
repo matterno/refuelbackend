@@ -30,9 +30,11 @@ public class VehicleServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		// Get the request type
 		int requestType = Integer.parseInt(req
 				.getParameter(Constants.REQUEST_TYPE));
 
+		// Get the parameters
 		String userName = req.getParameter(Constants.USER_NAME);
 		String vehicleMake = req.getParameter(Constants.VEHICLE_MAKE);
 		String vehicleModel = req.getParameter(Constants.VEHICLE_MODEL);
@@ -98,6 +100,21 @@ public class VehicleServlet extends HttpServlet {
 		resp.getWriter().print(json);
 	}
 
+	/**
+	 * Saves the vehicle to the datastore.
+	 * @param json
+	 * @param userName
+	 * @param vehicleName
+	 * @param vehicleType
+	 * @param vehicleDistanceUnit
+	 * @param vehicleQuantityUnit
+	 * @param vehicleConsumptionUnit
+	 * @param vehicleCurrency
+	 * @param vehicleMake
+	 * @param vehicleModel
+	 * @param vehicleYear
+	 * @throws JSONException
+	 */
 	private void saveVehicle(JSONObject json, String userName,
 			String vehicleName, int vehicleType, int vehicleDistanceUnit,
 			int vehicleQuantityUnit, int vehicleConsumptionUnit,
@@ -149,6 +166,13 @@ public class VehicleServlet extends HttpServlet {
 		json.put(Constants.JSON_SUCCESS, true);
 	}
 
+	/**
+	 * Gets a vehicle from the datastore and puts it into the json object.
+	 * @param json
+	 * @param userName
+	 * @param vehicleName
+	 * @throws JSONException
+	 */
 	private void getVehicle(JSONObject json, String userName, String vehicleName)
 			throws JSONException {
 		UserDAO userDAO = new UserDAO();
@@ -196,6 +220,12 @@ public class VehicleServlet extends HttpServlet {
 
 	}
 
+	/**
+	 * Gest all vehicle names and puts them into the json object.
+	 * @param json
+	 * @param userName
+	 * @throws JSONException
+	 */
 	private void getAllVehicle(JSONObject json, String userName)
 			throws JSONException {
 		// Find user in DB
@@ -233,6 +263,22 @@ public class VehicleServlet extends HttpServlet {
 
 	}
 
+	/**
+	 * Updates a vehicle from the datastore.
+	 * @param json
+	 * @param vehicleId
+	 * @param userName
+	 * @param vehicleName
+	 * @param vehicleType
+	 * @param vehicleDistanceUnit
+	 * @param vehicleQuantityUnit
+	 * @param vehicleConsumptionUnit
+	 * @param vehicleCurrency
+	 * @param vehicleMake
+	 * @param vehicleModel
+	 * @param vehicleYear
+	 * @throws JSONException
+	 */
 	private void updateVehicle(JSONObject json, long vehicleId,
 			String userName, String vehicleName, int vehicleType,
 			int vehicleDistanceUnit, int vehicleQuantityUnit,
@@ -302,6 +348,13 @@ public class VehicleServlet extends HttpServlet {
 		json.put(Constants.JSON_SUCCESS, true);
 	}
 
+	/**
+	 * Deletes a vehicle from the datastore.
+	 * @param json
+	 * @param userName
+	 * @param vehicleId
+	 * @throws JSONException
+	 */
 	private void deleteVehicle(JSONObject json, String userName, long vehicleId)
 			throws JSONException {
 		// Find user in DB

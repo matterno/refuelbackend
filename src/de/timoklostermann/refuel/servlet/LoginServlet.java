@@ -27,6 +27,7 @@ public class LoginServlet extends HttpServlet {
 		String loginName = req.getParameter(Constants.LOGIN_NAME);
 		String loginPw = req.getParameter(Constants.LOGIN_PASSWORD);
 
+		// Set the response content type to json.
 		resp.setContentType("application/json");
 		
 		UserDAO userDAO = new UserDAO();

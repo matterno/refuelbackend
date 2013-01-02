@@ -15,6 +15,11 @@ public class UserDAO extends AbstractDAO {
 		return (Class<T>) UserDAO.class;
 	}
 	
+	/**
+	 * Finds a user by his name.
+	 * @param name The user name.
+	 * @return The User.
+	 */
 	@SuppressWarnings("unchecked")
 	public User findByName(String name) {
         final Query query = pm.newQuery(User.class);
@@ -33,6 +38,11 @@ public class UserDAO extends AbstractDAO {
         }
 	}
 	
+	/**
+	 * Finds a user by his email adress.
+	 * @param email The email adress.
+	 * @return The User.
+	 */
 	@SuppressWarnings("unchecked")
 	public User findByEmail(String email) {
         final Query query = pm.newQuery(User.class);

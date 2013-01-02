@@ -28,6 +28,8 @@ public class RegisterServlet extends HttpServlet {
 		String registerPw = req.getParameter(Constants.REGISTER_PW);
 
 		JSONObject json = new JSONObject();
+		
+		// Set the response content type to json.
 		resp.setContentType("application/json");
 
 		UserDAO userDAO = new UserDAO();
